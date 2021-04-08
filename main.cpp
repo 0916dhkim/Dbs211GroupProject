@@ -4,8 +4,6 @@
 #include "Secrets.h"
 #include "utils.h"
 
-using oracle::occi::Connection;
-using oracle::occi::Environment;
 using namespace oracle::occi;
 using namespace std;
 using namespace dbs211;
@@ -18,6 +16,32 @@ int main(void) {
   try {
     env = Environment::createEnvironment(Environment::DEFAULT);
     conn = env->createConnection(user, pass, constr);
+
+    bool shouldExit = false;
+
+    while (!shouldExit) {
+      int menuSelection = menu();
+
+      switch (menuSelection) {
+        case 1: {
+          Employee target;
+          int employeeNumber = getInt("Enter Employee Number: ");
+          if (findEmployee(conn, employeeNumber, &target)) {
+            displayEmployee(conn, target);
+          } else {
+            cout << "Employee " << employeeNumber << " does not exist." << endl;
+          }
+          break;
+        }
+        case 2: {
+          displayAllEmployees(conn);
+          break;
+        }
+        default:
+          shouldExit = true;
+          break;
+      }
+    }
 
     // Clean up.
     env->terminateConnection(conn);
