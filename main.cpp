@@ -37,6 +37,11 @@ int main(void) {
           displayAllEmployees(conn);
           break;
         }
+        case 5: {
+            int employeeNumber = getInt("Enter Employee Number: ");
+            deleteEmployee(conn, employeeNumber);
+            break;
+        }
         default:
           shouldExit = true;
           break;

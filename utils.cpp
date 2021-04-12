@@ -22,9 +22,30 @@ int menu() {
   return getInt(0, 5, "Enter Option: ", "Invalid Option try again: ", false);
 }
 
-int findEmployee(oracle::occi::Connection* conn,
-                 int employeeNumber,
-                 Employee* emp) {
+void deleteEmployee(oracle::occi::Connection* conn, int employeeNumber) {
+    string query = "DELETE FROM employees WHERE employeeNumber = :1";
+    try {
+        Employee emp;
+
+        if (findEmployee(conn, employeeNumber, &emp)) {
+            Statement* stmt = conn->createStatement(query);
+            stmt->setInt(1, employeeNumber);
+            ResultSet* result = stmt->executeQuery();
+
+            conn->commit();
+            conn->terminateStatement(stmt);
+            cout << "The employee with ID " << employeeNumber << " is deleted successfully." << endl << endl;
+        }
+        else {
+            cout << "The employee with ID " << employeeNumber << " does not exist." << endl << endl;
+        }
+    }
+    catch (SQLException& e) {
+        cerr << e.getErrorCode() << ": " << e.getMessage() << endl;
+    }
+}
+
+int findEmployee(oracle::occi::Connection* conn, int employeeNumber, Employee* emp) {
   bool found = false;
   string query =
       "SELECT "

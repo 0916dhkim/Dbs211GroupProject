@@ -14,6 +14,13 @@ namespace dbs211 {
 int menu(void);
 
 /*
+ * Checks if employeeNumber argument exists in the sql table then
+ * deletes the row or prints an error if the employee does not exist.
+ * @author Danny Ou
+ */
+void deleteEmployee(oracle::occi::Connection* conn, int employeeNumber);
+
+/*
  * Find and save an employee to the given address.
  * Returns 0 if the employee does not exist. Returns 1 otherwise.
  * @author Donghyeon Kim
