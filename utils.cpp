@@ -1,3 +1,17 @@
+/*THIS PROJECT WAS FULLY CREATED BY:
+
+ - Marc Nicolas Oliva
+ - Danny Ou
+ - Donghyeon Kim
+ - Jonathan Forrester
+
+ All the code shown in this project is original content created by the authors mentioned above.
+
+ Submission - Date
+        MS1 - 09/04/2021
+        MS2 - 16/04/2021
+ */
+
 #define _CRT_SECURE_NO_WARNINGS
 #include "utils.h"
 #include <cstring>
@@ -42,6 +56,29 @@ void deleteEmployee(oracle::occi::Connection* conn, int employeeNumber) {
     }
     catch (SQLException& e) {
         cerr << e.getErrorCode() << ": " << e.getMessage() << endl;
+    }
+}
+
+void updateEmployee(oracle::occi::Connection* conn, int employeeNumber) {
+    string query3 =
+        "update EMPLOYEES SET Extension = :1 WHERE EMPLOYEENUMBER = :2";
+    Employee emp;
+    string extensions;
+    if (findEmployee(conn, employeeNumber, &emp)) {
+        cout << "Lastname: " << emp.lastName << endl;
+        cout << "Firstname: " << emp.firstName << endl;
+        cout << "Extension: ";
+        cin >> extensions;
+        Statement* stmt = conn->createStatement(query3);
+        stmt->setString(1, extensions);
+        stmt->setInt(2, employeeNumber);
+        ResultSet* result = stmt->executeQuery();
+        conn->commit();
+        conn->terminateStatement(stmt);
+        cout << "The employee's extension is updated successfully." << endl;
+    }
+    else {
+        cout << "The employee with ID " << employeeNumber << " does not exist." << endl;
     }
 }
 
@@ -138,6 +175,64 @@ void displayAllEmployees(oracle::occi::Connection* conn) {
   } catch (SQLException& e) {
     cerr << e.getErrorCode() << ": " << e.getMessage() << endl;
   }
+}
+
+void getEmployee(Employee* emp){
+
+    cout << "Employee Number: ";
+    cin >> emp->employeeNumber;
+    cout << "Last Name: ";
+    cin >> emp->lastName;
+    cout << "First Name: ";
+    cin >> emp->firstName;
+    cout << "Extension: ";
+    cin >> emp->extension;
+    cout << "Email: ";
+    cin >> emp->email;
+    cout << "Office Code: 1" << endl;
+    emp->officecode[0] = '1';
+    emp->officecode[1] = '\n';
+    cout << "Manager ID: 1002" << endl;
+    emp->reportsTo=1002;
+    cout << "Job Title: ";
+    cin >> emp->jobTitle;
+
+}
+
+void insertEmployee(oracle::occi::Connection* conn, Employee emp) {
+    getEmployee(&emp);
+    if (!findEmployee(conn, emp.employeeNumber, &emp)) {
+        string query =
+            "INSERT INTO employees VALUES (:1,:2,:3,:4,:5,:6,:7,:8) ";
+        try {
+            Statement* statement = conn->createStatement();
+            statement->setSQL(query);
+
+            statement->setInt(1, emp.employeeNumber);
+            statement->setString(2, emp.lastName);
+            statement->setString(3, emp.firstName);
+            statement->setString(4, emp.extension);
+            statement->setString(5, emp.email);
+            statement->setString(6, "1");
+            statement->setInt(7, 1002);
+            statement->setString(8, emp.jobTitle);
+
+            statement->executeUpdate();
+            
+            conn->commit();
+            conn->terminateStatement(statement);
+
+            cout << "The new employee is added successfully." << endl;
+        }
+        catch (SQLException& e) {
+            cerr << e.getErrorCode() << ": " << e.getMessage() << endl;
+        }
+    }
+    else {
+        cout << "An employee with the same employee number exists." << endl;
+    }
+
+
 }
 
 int getInt(int min,

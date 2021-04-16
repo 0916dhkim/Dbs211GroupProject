@@ -1,3 +1,17 @@
+/*THIS PROJECT WAS FULLY CREATED BY:
+
+ - Marc Nicolas Oliva
+ - Danny Ou
+ - Donghyeon Kim
+ - Jonathan Forrester
+
+ All the code shown in this project is original content created by the authors mentioned above.
+
+ Submission - Date
+        MS1 - 09/04/2021
+        MS2 - 16/04/2021
+ */
+
 #ifndef DBS211_UTILS_H
 #define DBS211_UTILS_H
 #include <occi.h>
@@ -19,7 +33,11 @@ int menu(void);
  * @author Danny Ou
  */
 void deleteEmployee(oracle::occi::Connection* conn, int employeeNumber);
-
+/*
+Select a certain employee and updates their extension
+@author Jonathan Forrester
+*/
+void updateEmployee(oracle::occi::Connection* conn, int employeeNumber);
 /*
  * Find and save an employee to the given address.
  * Returns 0 if the employee does not exist. Returns 1 otherwise.
@@ -41,6 +59,14 @@ void displayEmployee(oracle::occi::Connection* conn, Employee emp);
  */
 void displayAllEmployees(oracle::occi::Connection* conn);
 
+
+//Gets the information from the user and stores it in the struct.
+// @author Marc Nicolas Oliva
+void getEmployee(struct Employee* emp);
+
+// Inserts a new employee into the DataBase.
+// @author Marc Nicolas Oliva
+void insertEmployee(oracle::occi::Connection* conn, struct Employee emp);
 //------------------- Helper Functions -------------------
 
 /*
